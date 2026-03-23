@@ -65,6 +65,13 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
+		<!-- WebClient lives inside spring-boot-starter-webflux -->
+		<!-- You don't need a full reactive app to use WebClient - 
+			you can use it in a regular Spring Boot MVC app just for HTTP calls -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

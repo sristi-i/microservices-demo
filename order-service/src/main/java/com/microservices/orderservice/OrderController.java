@@ -10,8 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/orders")
 public class OrderController{
 
+    // Day 2 - Feign client
     @Autowired
     private UserClient userClient;
+
+    // Day 3 - WebClient via service layer
+    // WebClient is non-blocking/reactive - modern replacementfor RestTemplate
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/{orderId}")
     public Order getOrder(@PathVariable int orderId){
@@ -37,6 +43,15 @@ public class OrderController{
 
         return new Order(orderId, "Laptop", user);
         
+    }
+
+    // Day 3 endpoint - uses WebClient
+    // block() - WebClient is async by deafult - it returns Mono<User> (a future value)
+    // block() waits for the response synchronously - bridges reactive to non-reactive
+    // in a fully ractive app never use block() - returns Mono<Order>
+    @GetMapping("/webclient/{orderId}")
+    public Order getOrderViaWebClient(@PathVariable int orderId){
+        return orderService.getOrderWithWebClient(orderId);
     }
 
 }
