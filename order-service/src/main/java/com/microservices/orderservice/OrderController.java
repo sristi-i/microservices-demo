@@ -5,19 +5,47 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController{
 
-    // Day 2 - Feign client
+    // Day 4 - RestTemplate + Eureka
+    // @LaodBalanced on RestTemplate bean makes it Eureka-aware
+    // "http://user-service" -> Eureka resolves to actual host:port
     @Autowired
-    private UserClient userClient;
+    private RestTemplate restTemplate;
+
+    @GetMapping("/eureka/{orderId}")
+    public Order getOrderViaEureka(@PathVariable int orderId) {
+        User user = restTemplate.getForObject(
+            "http://user-service/users/" + orderId,
+            User.class
+        );
+        return new Order(orderId, "Tablet", user);
+    }
+    
 
     // Day 3 - WebClient via service layer
     // WebClient is non-blocking/reactive - modern replacementfor RestTemplate
     @Autowired
     private OrderService orderService;
+
+        // Day 3 endpoint - uses WebClient
+    // block() - WebClient is async by deafult - it returns Mono<User> (a future value)
+    // block() waits for the response synchronously - bridges reactive to non-reactive
+    // in a fully ractive app never use block() - returns Mono<Order>
+    @GetMapping("/webclient/{orderId}")
+    public Order getOrderViaWebClient(@PathVariable int orderId){
+        return orderService.getOrderWithWebClient(orderId);
+    }
+
+    // Day 2 - Feign client
+    @Autowired
+    private UserClient userClient;
 
     @GetMapping("/{orderId}")
     public Order getOrder(@PathVariable int orderId){
@@ -43,15 +71,6 @@ public class OrderController{
 
         return new Order(orderId, "Laptop", user);
         
-    }
-
-    // Day 3 endpoint - uses WebClient
-    // block() - WebClient is async by deafult - it returns Mono<User> (a future value)
-    // block() waits for the response synchronously - bridges reactive to non-reactive
-    // in a fully ractive app never use block() - returns Mono<Order>
-    @GetMapping("/webclient/{orderId}")
-    public Order getOrderViaWebClient(@PathVariable int orderId){
-        return orderService.getOrderWithWebClient(orderId);
     }
 
 }

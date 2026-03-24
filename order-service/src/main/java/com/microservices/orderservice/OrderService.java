@@ -16,7 +16,7 @@ public class OrderService {
 
     public Order getOrderWithWebClient(int orderId){
         User user = webClientBuilder
-                    .baseUrl("http://localhost:8081")
+                    .baseUrl("http://user-service")
                     .build()
                     .get()
                     .uri("/users/{id}", orderId)
