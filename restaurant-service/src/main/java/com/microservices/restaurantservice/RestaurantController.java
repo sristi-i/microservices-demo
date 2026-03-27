@@ -5,12 +5,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/restaurants")
 public class RestaurantController {
+
+    // value from github config repo via config server
+    @Value("${restaurant.tagline:Default tagline}")
+    private String tagline;
+
+    // test config server is working
+    @GetMapping("/config")
+    public String getConfig(){
+        return tagline;
+    }
+    
 
     // GET single restaurant by id
     // this will be called by oder-sevice via Feign
