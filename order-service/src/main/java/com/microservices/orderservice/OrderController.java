@@ -6,12 +6,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController{
+
+    // Day 8 - Resilience4j via OrderService
+    //  Controller just delegates to service - no circuitbreaker logic here
+    @GetMapping("/restaurant/{orderId}")
+    public Order getOrderWithRestaurant(@PathVariable int orderId) {
+        return orderService.getOrderWithRestaurant(orderId);
+    }
+    
 
     // Day 4 - RestTemplate + Eureka
     // @LaodBalanced on RestTemplate bean makes it Eureka-aware
@@ -34,7 +40,7 @@ public class OrderController{
     @Autowired
     private OrderService orderService;
 
-        // Day 3 endpoint - uses WebClient
+    // Day 3 endpoint - uses WebClient
     // block() - WebClient is async by deafult - it returns Mono<User> (a future value)
     // block() waits for the response synchronously - bridges reactive to non-reactive
     // in a fully ractive app never use block() - returns Mono<Order>

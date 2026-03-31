@@ -77,6 +77,28 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+		<!-- Resilience4j Circuit Breaker - modern Hystrix replacement -->
+		<!-- Why Resilience4j over Hystrix?
+     		Resilience4j works with Spring Boot 3.x, supports reactive,
+     		lightweight, modular - Hystrix is deprecated and Boot 3.x incompatible -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
+		<!-- Actuator - needed by Resilience4j to expose circuit breaker health -->
+		<!-- Actuator exposes /actuator/health showing circuit breaker state (CLOSED, OPEN, HALF_OPEN) 
+			- useful for monitroing in production -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<!-- AOP - required internally by Resilience4j to intercept @CircuitBreaker -->
+		<!-- Resilience4j uses Spring AOP (Aspect-Oriented Programming) to intercept method calls anootated
+			with @CircuitBreaker - without AOP the annotation wont work -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
